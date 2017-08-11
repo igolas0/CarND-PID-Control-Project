@@ -2,9 +2,6 @@
 
 using namespace std;
 
-/*
-* TODO: Complete the PID class.
-*/
 
 PID::PID() {}
 
