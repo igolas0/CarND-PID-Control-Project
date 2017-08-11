@@ -34,7 +34,7 @@ int main()
 
   PID pid;
   PID pid_throttle;
-  // TODO: Initialize the pid variable.
+  // Initialize the pid variables (for throttle and steering).
   double initial_Kp = 0.2;
   double initial_Kd = 3.0;
   double initial_Ki = 0.0003;
@@ -58,15 +58,12 @@ int main()
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
           double throttle_value;
-          /*
-          * TODO: Calcuate steering value here, remember the steering value is
-          * [-1, 1].
-          * NOTE: Feel free to play around with the throttle and speed. Maybe use
-          * another PID controller to control the speed!
-          */
+
+          //Update Errors for PID controlling steering (proportional to CTE)
           pid.UpdateError(cte);
           steer_value = pid.TotalError();
       
+          //Update Errors for PID controlling throttle (proportional to differente to ref. velocity)
           pid_throttle.UpdateError(speed - 40);
           throttle_value = pid_throttle.TotalError();
           
