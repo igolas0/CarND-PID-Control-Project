@@ -3,6 +3,41 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+[//]: # (Image References) 
+
+[image1]: ./images/pid.png "PID" 
+
+## Writeup
+
+In this project two PID controllers were used to control each steering and throttle of a car in a driving simulator. The car drives successfully around the track. The speed was set to 40mph. 
+
+The PID controller was implemented in PID.cpp. The method Init initializes the PID with the parameters passed as argument, while the method UpdateError keeps track of the proportional, differential and integral errors of the PID controller (more on that later). Finally the method TotalError() returns the control input as a result (combining P, I and D corrections).
+
+The main program main.cpp handles the communication via uWebSockets to the simulator. From lines 35 to 44 two instances of the PID class (one for steering and one for throttle/braking) are created and initialized with the chosen parameters. From lines 64 to 70 both PID controllers are fed every time the there is new information coming from the simulator. We pass the Cross Track Error to the PID controlling the steering values, which is used to update/compute de PID error and return the steering value. The same is done with the PID controlling the throttle, but in this case we give the difference of the current speed of the car and the reference speed (which is set to 40mph in our case).
+
+##Small overview of PID Controllers
+
+PID controllers are a rather basic, but commonly used, class of controllers. PID stands for Proportional, Integral and Derivative Terms. The PID-Controller can be further subdivided into the P-Controller, I-Controller and D-Controller, which can be used separately or as a group to achieve the specific goals depending on the target system.
+
+The P-Controller outputs a correction based uniquely on the amplitude/strength of the input signal. In our case we feed the P-Controller with the Cross Track Error (or the difference between current speed and reference speed). The larger the input signal the more aggresively the P-Controller tries to compensate. The main problem of the P-Controller is that it tends to overshoot (see image below). This one of the cases where the D-Controller can help.
+
+The D-Controller reacts to fast changing input signals. The higher the derivative of the input signal the higher the output of the D-Controller. In the figure below we can see that the PD-Controller overcomes the overshooting problem.
+
+The I-Controller outputs the integral of the error. This is useful to take systemic bias into account (e.g. desalignment of the tyres). In the figure below the PD-Controller shows the best result, since there is no systemic bias in the system, but when systemic bias is present, which is often the case in non-ideal systems, the PID-Controller is the best option.
+
+![alt text][image1]
+
+##Tuning of parameters
+
+The parameters were chosen manually and iteratively after trial and error driving autonomously around the track. I started with the recommended parameters presented along Sebastian Thrun's PID class, which worked fairly well and improved upon that.
+
+My final parameters for steering were Kp=0.2, Kd=1.5 and Ki=0.0001. My impression was that systemic bias in the simulator is really low, since I did not observe noticable changes in the results when setting Ki to zero.
+
+For handling the throttle I finally chose Kp=0.2, Kd=0.2 and Ki=0.0002. I diminished Kd and increased Ki or else the controller would not reach 40mph.
+
+It is possible to improve the driving behaviour by further tuning the parameters (either manually or optimizing with for example the Twiddle algorighm). I experimented enough to get an intuition for the PID controller, but realized that a PID controller is far from optimal for autonomous driving purposes and wanted to skip rather quickly to the more advanced MPC Controller Project ;)
+
+
 ## Dependencies
 
 * cmake >= 3.5
