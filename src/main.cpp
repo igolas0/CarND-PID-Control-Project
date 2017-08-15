@@ -36,9 +36,11 @@ int main()
   PID pid_throttle;
   // Initialize the pid variables (for throttle and steering).
   double initial_Kp = 0.2;
-  double initial_Kd = 3.0;
-  double initial_Ki = 0.0003;
+  double initial_Kd = 1.5;
+  double initial_Ki = 0.0001;
   pid.Init(initial_Kp, initial_Ki, initial_Kd);  
+  initial_Kd = 0.2;
+  initial_Ki = 0.0002;
   pid_throttle.Init(initial_Kp, initial_Ki , initial_Kd);  
 
   h.onMessage([&pid, &pid_throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
